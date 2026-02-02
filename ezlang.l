@@ -71,10 +71,11 @@ NEWLINE     \n
 "*"                 { print_token("MULT_OP", yytext); return 34; }
 "/"                 { print_token("DIV_OP", yytext); return 35; }
 "%"                 { print_token("MOD_OP", yytext); return 36; }
-">"                 { print_token("GREATER_THAN", yytext); return 37; }
-"<"                 { print_token("LESS_THAN", yytext); return 38; }
 ">="                { print_token("GREATER_EQUAL", yytext); return 39; }
 "<="                { print_token("LESS_EQUAL", yytext); return 40; }
+">"                 { print_token("GREATER_THAN", yytext); return 37; }
+"<"                 { print_token("LESS_THAN", yytext); return 38; }
+
 
 "("                 { print_token("LEFT_PAREN", yytext); return 41; }
 ")"                 { print_token("RIGHT_PAREN", yytext); return 42; }
@@ -103,7 +104,6 @@ void print_token(const char* token_type, const char* lexeme) {
 int main(int argc, char** argv) {
     FILE* input_file;
 
-    // Set yyout to stdout by default, or to a file if specified
     yyout = stdout;
     if (argc > 2) {
         yyout = fopen(argv[2], "w");
@@ -113,12 +113,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    fprintf(yyout, "\n================================================================\n");
-    fprintf(yyout, "  EzLang Lexical Analyzer\n");
-    fprintf(yyout, "  Compiler Design Laboratory - CSE 3212\n");
-    fprintf(yyout, "  Author: Farid Ahmed Patwary (Roll: 2107043)\n");
-    fprintf(yyout, "================================================================\n\n");
-
     if (argc > 1) {
         input_file = fopen(argv[1], "r");
         if (!input_file) {
@@ -126,26 +120,18 @@ int main(int argc, char** argv) {
             return 1;
         }
         yyin = input_file;
-        fprintf(yyout, "Analyzing file: %s\n\n", argv[1]);
     }
 
-    fprintf(yyout, "%-10s %-25s %s\n", "Line", "Token Type", "Lexeme");
-    fprintf(yyout, "---------------------------------------------------------------\n");
+    fprintf(yyout, "Line    Token Type               Lexeme\n");
+    fprintf(yyout, "----------------------------------------\n");
 
     while (yylex() != 0) { }
 
-    fprintf(yyout, "\n================================================================\n");
-    fprintf(yyout, "Lexical Analysis Complete!\n");
-    fprintf(yyout, "Total Tokens Found: %d\n", token_count);
-    fprintf(yyout, "Total Lines: %d\n", yylineno);
-    fprintf(yyout, "================================================================\n");
+    
+    fprintf(yyout, "\nTotal tokens: %d, Lines: %d\n", token_count, yylineno);
 
-    if (yyout != stdout) {
-        fclose(yyout);
-    }
-    if (yyin != stdin) {
-        fclose(input_file);
-    }
+    if (yyout != stdout) fclose(yyout);
+    if (yyin != stdin) fclose(input_file);
 
     return 0;
 }

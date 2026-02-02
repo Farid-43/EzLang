@@ -1,246 +1,33 @@
-# EzLang Test File
-# This file contains sample programs to test the lexical analyzer
+# EzLang input
 
-# ===================================================================
-# Example 1: Input, Conditional, and While Loop
-# ===================================================================
-
-start() begin
-    # Variable declaration
-    num x
-    x = scan()
-    
-    # Python-like logic
-    check (x > 0) begin
-        show("Positive")
-    end
-    or check (x equals 0) begin
-        show("Zero")
-    end
-    otherwise begin
-        show("Negative")
-    end
-    
-    # While Loop
-    num i = 0
-    during (i < x) begin
-        show(i)
-        i = i + 1
-    end
-    
-    send 0
-end
-
-
-# ===================================================================
-# Example 2: Function Definition
-# ===================================================================
-
-# Function Definition
-num add(num a, num b) begin
-    send a + b
-end
+/* Multi-line comment
+   Testing
+   ignore
+   End */
 
 start() begin
-    num s
-    s = add(2, 3)
-    show(s)
-    send 0
-end
+    num x = 10
+    dec y = 2.5
+    char c = 'A'
 
+    show("Start")
 
-# ===================================================================
-# Example 3: Range-Based Loop
-# ===================================================================
-
-start() begin
-    num i
-    # Simplified loop syntax
-    iterate (i = 0 to 5) begin
-        show(i)
-    end
-    send 0
-end
-
-
-# ===================================================================
-# Example 4: Testing All Data Types
-# ===================================================================
-
-start() begin
-    num count = 10
-    dec pi = 3.1416
-    char grade = 'A'
-    fixed num max = 100
-    
-    show("Count: ", count)
-    show("Pi: ", pi)
-    show("Grade: ", grade)
-    show("Max: ", max)
-    
-    send 0
-end
-
-
-# ===================================================================
-# Example 5: Switch Statement (Inspect)
-# ===================================================================
-
-start() begin
-    num grade = 85
-    
-    inspect(grade) begin
-        option 90:
-            show("Excellent")
-            stop
-        option 80:
-            show("Very Good")
-            stop
-        option 70:
-            show("Good")
-            stop
-        fallback:
-            show("Need Improvement")
-    end
-    
-    send 0
-end
-
-
-# ===================================================================
-# Example 6: Logical Operators
-# ===================================================================
-
-start() begin
-    num a = 5
-    num b = 10
-    
-    check (a > 0 and b > 0) begin
+    check (x > 0 and y > 0) begin
         show("Both positive")
     end
-    
-    check (a equals 5 or b equals 5) begin
-        show("At least one is 5")
-    end
-    
-    check (not a equals 0) begin
-        show("A is not zero")
-    end
-    
-    send 0
-end
 
+    x = power(2, 3)
+    show(x)
 
-# ===================================================================
-# Example 7: Math Functions
-# ===================================================================
-
-start() begin
-    num result1
-    num result2
-    
-    result1 = power(2, 3)
-    result2 = root(16)
-    
-    show("2 to the power 3: ", result1)
-    show("Square root of 16: ", result2)
-    
-    send 0
-end
-
-
-# ===================================================================
-# Example 8: Nested Loops
-# ===================================================================
-
-start() begin
-    num i
-    num j
-    
-    iterate (i = 1 to 3) begin
-        iterate (j = 1 to 3) begin
-            show("i: ", i, " j: ", j)
-        end
-    end
-    
-    send 0
-end
-
-
-# ===================================================================
-# Example 9: Skip and Stop (Continue and Break)
-# ===================================================================
-
-start() begin
     num i = 0
-    
-    during (i < 10) begin
-        i = i + 1
-        
-        check (i equals 5) begin
-            skip
-        end
-        
-        check (i equals 8) begin
-            stop
-        end
-        
+    during (i < 3) begin
         show(i)
+        i = i + 1
     end
-    
-    send 0
-end
 
+    check (not x equals 0) begin
+        show("Done")
+    end
 
-/*
-   Multi-line comment test
-   This should be ignored by the lexer
-   All of this text should be skipped
-*/
-
-# ===================================================================
-# Example 10: All Operators Test
-# ===================================================================
-
-start() begin
-    num a = 10
-    num b = 3
-    num result
-    
-    result = a + b
-    show("Addition: ", result)
-    
-    result = a - b
-    show("Subtraction: ", result)
-    
-    result = a * b
-    show("Multiplication: ", result)
-    
-    result = a / b
-    show("Division: ", result)
-    
-    result = a % b
-    show("Modulus: ", result)
-    
-    check (a > b) begin
-        show("a is greater than b")
-    end
-    
-    check (a >= b) begin
-        show("a is greater than or equal to b")
-    end
-    
-    check (a < b) begin
-        show("a is less than b")
-    end
-    
-    check (a <= b) begin
-        show("a is less than or equal to b")
-    end
-    
-    check (a differs b) begin
-        show("a is not equal to b")
-    end
-    
     send 0
 end

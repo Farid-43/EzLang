@@ -294,15 +294,15 @@ static yyconst short int yy_acclist[254] =
         1,   57,   58,   41,   57,   58,   57,   58,   46,   57,
        58,   47,   57,   58,   39,   57,   58,   37,   57,   58,
        48,   57,   58,   38,   57,   58,   40,   57,   58,   51,
-       57,   58,   49,   57,   58,   43,   57,   58,   36,   57,
-       58,   42,   57,   58,   54,   57,   58,   54,   57,   58,
+       57,   58,   49,   57,   58,   45,   57,   58,   36,   57,
+       58,   44,   57,   58,   54,   57,   58,   54,   57,   58,
        54,   57,   58,   54,   57,   58,   54,   57,   58,   54,
        57,   58,   54,   57,   58,   54,   57,   58,   54,   57,
        58,   54,   57,   58,   54,   57,   58,   54,   57,   58,
        54,   57,   58,   54,   57,   58,   54,   57,   58,   54,
 
        57,   58,    5,   58,    4,   58,    5,   58,   55,   53,
-        1,    2,   51,   45,   44,   54,   54,   54,   54,   54,
+        1,    2,   51,   43,   42,   54,   54,   54,   54,   54,
        54,   54,   54,   54,   54,   54,   54,   54,   54,   54,
        54,   30,   54,   54,   54,   54,   54,   54,   54,   54,
        54,   25,   54,   54,   54,    3,   52,   50,   29,   54,
@@ -972,86 +972,86 @@ YY_RULE_SETUP
 case 42:
 YY_RULE_SETUP
 #line 74 "ezlang.l"
-{ print_token("GREATER_THAN", yytext); return 37; }
+{ print_token("GREATER_EQUAL", yytext); return 39; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 75 "ezlang.l"
-{ print_token("LESS_THAN", yytext); return 38; }
+{ print_token("LESS_EQUAL", yytext); return 40; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 76 "ezlang.l"
-{ print_token("GREATER_EQUAL", yytext); return 39; }
+{ print_token("GREATER_THAN", yytext); return 37; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 77 "ezlang.l"
-{ print_token("LESS_EQUAL", yytext); return 40; }
+{ print_token("LESS_THAN", yytext); return 38; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 79 "ezlang.l"
+#line 80 "ezlang.l"
 { print_token("LEFT_PAREN", yytext); return 41; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 80 "ezlang.l"
+#line 81 "ezlang.l"
 { print_token("RIGHT_PAREN", yytext); return 42; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 81 "ezlang.l"
+#line 82 "ezlang.l"
 { print_token("COMMA", yytext); return 43; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 82 "ezlang.l"
+#line 83 "ezlang.l"
 { print_token("COLON", yytext); return 44; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 84 "ezlang.l"
+#line 85 "ezlang.l"
 { print_token("FLOAT_LITERAL", yytext); return 46; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 85 "ezlang.l"
+#line 86 "ezlang.l"
 { print_token("INTEGER_LITERAL", yytext); return 45; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 86 "ezlang.l"
+#line 87 "ezlang.l"
 { print_token("CHAR_LITERAL", yytext); return 47; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 87 "ezlang.l"
+#line 88 "ezlang.l"
 { print_token("STRING_LITERAL", yytext); return 48; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 89 "ezlang.l"
+#line 90 "ezlang.l"
 { print_token("IDENTIFIER", yytext); return 49; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 91 "ezlang.l"
+#line 92 "ezlang.l"
 { }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 92 "ezlang.l"
+#line 93 "ezlang.l"
 { }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 94 "ezlang.l"
+#line 95 "ezlang.l"
 { fprintf(yyout, "Line %d: ERROR - Unrecognized character: '%s'\n", yylineno, yytext); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 96 "ezlang.l"
+#line 97 "ezlang.l"
 ECHO;
 	YY_BREAK
 #line 1058 "lex.yy.c"
@@ -1939,7 +1939,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 96 "ezlang.l"
+#line 97 "ezlang.l"
 
 
 void print_token(const char* token_type, const char* lexeme) {
@@ -1950,7 +1950,7 @@ void print_token(const char* token_type, const char* lexeme) {
 int main(int argc, char** argv) {
     FILE* input_file;
 
-    // Set yyout to stdout by default, or to a file if specified
+    // output file
     yyout = stdout;
     if (argc > 2) {
         yyout = fopen(argv[2], "w");
@@ -1960,12 +1960,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    fprintf(yyout, "\n================================================================\n");
-    fprintf(yyout, "  EzLang Lexical Analyzer\n");
-    fprintf(yyout, "  Compiler Design Laboratory - CSE 3212\n");
-    fprintf(yyout, "  Author: Farid Ahmed Patwary (Roll: 2107043)\n");
-    fprintf(yyout, "================================================================\n\n");
-
+    // input file
     if (argc > 1) {
         input_file = fopen(argv[1], "r");
         if (!input_file) {
@@ -1973,26 +1968,20 @@ int main(int argc, char** argv) {
             return 1;
         }
         yyin = input_file;
-        fprintf(yyout, "Analyzing file: %s\n\n", argv[1]);
     }
 
-    fprintf(yyout, "%-10s %-25s %s\n", "Line", "Token Type", "Lexeme");
-    fprintf(yyout, "---------------------------------------------------------------\n");
+    // Column headers
+    fprintf(yyout, "Line    Token Type               Lexeme\n");
+    fprintf(yyout, "----------------------------------------\n");
 
+    // Scan tokens
     while (yylex() != 0) { }
 
-    fprintf(yyout, "\n================================================================\n");
-    fprintf(yyout, "Lexical Analysis Complete!\n");
-    fprintf(yyout, "Total Tokens Found: %d\n", token_count);
-    fprintf(yyout, "Total Lines: %d\n", yylineno);
-    fprintf(yyout, "================================================================\n");
+    
+    fprintf(yyout, "\nTotal tokens: %d, Lines: %d\n", token_count, yylineno);
 
-    if (yyout != stdout) {
-        fclose(yyout);
-    }
-    if (yyin != stdin) {
-        fclose(input_file);
-    }
+    if (yyout != stdout) fclose(yyout);
+    if (yyin != stdin) fclose(input_file);
 
     return 0;
 }
