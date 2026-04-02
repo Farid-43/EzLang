@@ -1,0 +1,14 @@
+start() begin
+    num i
+    num j
+
+    iterate(i = 1 to 2) begin
+        j = 1
+        during (j <= 3) begin
+            show("i=", i, ",j=", j)
+            j = j + 1
+        end
+    end
+
+    send 0
+end

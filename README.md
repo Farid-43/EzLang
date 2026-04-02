@@ -1,196 +1,84 @@
-# EzLang Lexical Analyzer
+# EzLang Compiler (Core Milestone)
 
-A lexical analyzer (scanner) for the **EzLang** programming language, built using Flex. This project is part of the Compiler Design Laboratory course (CSE 3212).
+This project currently completes the core compiler milestones using Flex + Bison:
 
-## 🎯 Overview
+- Lexical analysis (tokenization)
+- Syntax analysis (grammar parsing)
+- Runtime execution for core language constructs
 
-EzLang is a beginner-friendly programming language with English-like keywords. This lexical analyzer breaks down EzLang source code into tokens for further processing by a parser.
+Unique/advanced features are intentionally postponed for a later phase.
 
-## 🚀 Features
+## Current Status
 
-### Supported EzLang Features:
+Core features implemented:
 
-- **Data Types**: `num`, `dec`, `char`, `fixed`, `void`
-- **Control Structures**: `check`/`or check`/`otherwise` (if-else), `inspect`/`option`/`fallback` (switch-case)
-- **Loops**: `during` (while), `iterate` (for)
-- **I/O Operations**: `show` (print), `scan` (input), `send` (return)
-- **Logical Operators**: `and`, `or`, `not`, `equals`, `differs`
-- **Math Functions**: `power`, `root`
-- **Comments**: Single-line (`#`) and multi-line (`/* */`)
+- Data types: `num`, `dec`, `char`, `fixed`, `void`
+- Declarations and assignments
+- Expressions:
+  - Arithmetic: `+`, `-`, `*`, `/`, `%`
+  - Relational: `>`, `<`, `>=`, `<=`, `equals`, `differs`
+  - Logical: `and`, `or`, `not`
+  - Math functions: `power()`, `root()`
+- Control flow:
+  - `check` / `or check` / `otherwise`
+  - `during`
+  - `iterate(i = a to b)`
+- I/O:
+  - `show(...)`
+  - `scan(...)`
+  - `send`
+- Comments:
+  - single-line `# ...`
+  - multi-line `/* ... */`
 
-### Technical Features:
+## Project Files
 
-- Automatic line number tracking (`%option yylineno`)
-- Multi-line comment state machine
-- Regular expression definitions for maintainability
-- Flexible output (screen or file)
-- Command-line argument support
+- `ezlang.l` - Flex lexer specification
+- `ezlang.y` - Bison parser + AST + executor
+- `test/test.ez` - main core test program
+- `test/test_core.ez` - additional core behavior regression test
 
-## 📁 Project Structure
+Generated files after build:
 
-```
-EzLang/
-├── ezlang.l          # Flex lexer specification
-├── test.ez           # Sample EzLang test file
-├── lex.yy.c          # Generated C scanner (after compilation)
-├── ezlang_lexer.exe  # Executable (after compilation)
-└── README.md         # This file
-```
+- `ezlang.tab.c`, `ezlang.tab.h`
+- `lex.yy.c`
+- `ezlang_parser.exe`
 
-## 🛠️ Build Instructions
+## Build and Run (Windows)
 
-### Prerequisites:
+Use a shell where `bison`, `flex`, and `gcc` are available.
 
-- **Flex** (lexical analyzer generator)
-- **GCC** (C compiler)
-
-### Compilation:
-
-```bash
-# Step 1: Generate C scanner from Flex file
+```bat
+bison -d ezlang.y
 flex ezlang.l
-
-# Step 2: Compile the generated C code
-gcc lex.yy.c -o ezlang_lexer
-
-# Step 3: Run the lexer
-ezlang_lexer test.ez
-
-# Alternative: One-line build
-flex ezlang.l && gcc lex.yy.c -o ezlang_lexer
+gcc ezlang.tab.c lex.yy.c -o ezlang_parser.exe -lm
 ```
 
-## 📖 Usage
+Run with input file:
 
-### Basic Usage:
-
-```bash
-# Analyze from keyboard input
-./ezlang_lexer
-
-# Analyze a file and display results
-./ezlang_lexer test.ez
-
-# Analyze a file and save results
-./ezlang_lexer test.ez output.txt
+```bat
+ezlang_parser.exe test\test.ez
 ```
 
-### Command-line Arguments:
+Or write output to a file:
 
-```bash
-ezlang_lexer [input_file] [output_file]
+```bat
+ezlang_parser.exe test\test.ez output.txt
 ```
 
-- `input_file`: EzLang source file to analyze (optional, defaults to stdin)
-- `output_file`: Where to save results (optional, defaults to stdout)
+## Verified Core Tests
 
-## 💡 Example
+1. `test/test.ez`
 
-### Sample EzLang Code (`test.ez`):
+- Validates declarations, expressions, `check`, `during`, `show`, and `send`.
 
-```ezlang
-# Simple EzLang Program
-start() begin
-    num x = 5
-    check (x > 0) begin
-        show("Positive number")
-    end
-    send 0
-end
-```
+2. `test/test_core.ez`
 
-### Output:
+- Validates newline-separated `check -> or check -> otherwise` chain.
+- Validates `iterate` and `during` loops.
 
-```
-================================================================
-  EzLang Lexical Analyzer
-  Compiler Design Laboratory - CSE 3212
-  Author: Farid Ahmed Patwary (Roll: 2107043)
-================================================================
+## Notes
 
-Analyzing file: test.ez
-
-Line       Token Type                Lexeme
----------------------------------------------------------------
-Line   2: KEYWORD_START             --> start
-Line   2: LEFT_PAREN                --> (
-Line   2: RIGHT_PAREN               --> )
-Line   2: KEYWORD_BEGIN             --> begin
-Line   3: KEYWORD_NUM               --> num
-Line   3: IDENTIFIER                --> x
-Line   3: ASSIGN_OP                 --> =
-Line   3: INTEGER_LITERAL           --> 5
-Line   4: KEYWORD_CHECK             --> check
-Line   4: LEFT_PAREN                --> (
-Line   4: IDENTIFIER                --> x
-Line   4: GREATER_THAN              --> >
-Line   4: INTEGER_LITERAL           --> 0
-Line   4: RIGHT_PAREN               --> )
-Line   4: KEYWORD_BEGIN             --> begin
-Line   5: KEYWORD_SHOW              --> show
-Line   5: LEFT_PAREN                --> (
-Line   5: STRING_LITERAL            --> "Positive number"
-Line   5: RIGHT_PAREN               --> )
-Line   6: KEYWORD_END               --> end
-Line   7: KEYWORD_SEND              --> send
-Line   7: INTEGER_LITERAL           --> 0
-Line   8: KEYWORD_END               --> end
-
-================================================================
-Lexical Analysis Complete!
-Total Tokens Found: 19
-Total Lines: 8
-================================================================
-```
-
-## 🏗️ EzLang Language Specification
-
-### Keywords:
-
-| Category              | EzLang Keyword                  | Equivalent             |
-| --------------------- | ------------------------------- | ---------------------- |
-| **Program Structure** | `start`, `begin`, `end`         | main(), {, }           |
-| **Data Types**        | `num`, `dec`, `char`, `void`    | int, float, char, void |
-| **Control Flow**      | `check`, `otherwise`, `inspect` | if, else, switch       |
-| **Loops**             | `during`, `iterate`             | while, for             |
-| **I/O**               | `show`, `scan`, `send`          | print, input, return   |
-| **Logic**             | `and`, `or`, `not`, `equals`    | &&, \|\|, !, ==        |
-
-### Operators:
-
-- **Arithmetic**: `+`, `-`, `*`, `/`, `%`
-- **Comparison**: `>`, `<`, `>=`, `<=`, `equals`, `differs`
-- **Assignment**: `=`
-- **Math Functions**: `power()`, `root()`
-
-## 🧪 Testing
-
-The project includes comprehensive test cases in `test.ez` covering:
-
-- Variable declarations and assignments
-- Conditional statements (if-else)
-- Loops (while, for)
-- Function definitions
-- All data types
-- Switch statements
-- Logical operations
-- Mathematical operations
-
-## 👨‍💻 Author
-
-**Farid Ahmed Patwary**  
-Roll: 2107043  
-Course: CSE 3212 - Compiler Design Laboratory
-
-## 📚 Technical Details
-
-- **Lexer Generator**: GNU Flex
-- **Language**: C
-- **Line Tracking**: Automatic (`yylineno`)
-- **State Management**: Multi-line comment handling
-- **Memory Management**: Safe string handling
-- **Error Handling**: Unrecognized character detection
-
----
-
-_This lexical analyzer is the first phase of building a complete EzLang compiler._
+- Parser currently builds with expected grammar conflicts (`%expect 5`).
+- This is acceptable for the current grammar shape and does not block core behavior.
+- Advanced/unique rubric items (for example, TAC generation or extra optimizations) are not included yet by design.

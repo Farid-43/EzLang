@@ -1,0 +1,7 @@
+start() begin
+    iterate(i = 1 to 3) begin
+        show(i)
+    end
+
+    send 0
+end

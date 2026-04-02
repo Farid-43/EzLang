@@ -1,0 +1,10 @@
+num add(num a, num b) begin
+    send a + b
+end
+
+start() begin
+    num s
+    s = add(2, 3)
+    show(s)
+    send 0
+end

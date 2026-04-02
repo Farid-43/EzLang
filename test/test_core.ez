@@ -1,0 +1,65 @@
+# Core behavior test: declarations, if-else chain, iterate, during, send
+start() begin
+    num x = 2
+    dec y = 4.5
+    char c = 'B'
+    num a = 10
+    num b = 22
+    num r
+
+    check (x > 5) begin
+        show("x > 5")
+    end
+    or check (x equals 2) begin
+        show("x == 2")
+    end
+    otherwise begin
+        show("fallback")
+    end
+
+    iterate(i = 1 to 3) begin
+        show(i)
+    end
+
+    during (x < 5) begin
+        show(x)
+        x = x + 1
+    end
+
+    show("OPS")
+
+    r = a + b
+    show("ADD")
+    show(r)
+
+    r = b - a
+    show("SUB")
+    show(r)
+
+    r = a * b
+    show("MUL")
+    show(r)
+
+    r = b / a
+    show("DIV")
+    show(r)
+
+    r = b % a
+    show("MOD")
+    show(r)
+
+    check (a equals 10) begin
+        show("EQUALS TRUE")
+    end
+
+    check (a differs b) begin
+        show("DIFFERS TRUE")
+    end
+
+    num assign_test = 0
+    assign_test = 5
+    show("ASSIGN")
+    show(assign_test)
+
+    send 0
+end

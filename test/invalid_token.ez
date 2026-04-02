@@ -1,0 +1,4 @@
+start() begin
+num x = 5
+@
+end

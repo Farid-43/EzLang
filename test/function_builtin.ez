@@ -1,0 +1,11 @@
+start() begin
+    dec p = power(2, 3)
+    dec r = root(9)
+
+    show("power")
+    show(p)
+    show("root")
+    show(r)
+
+    send 0
+end

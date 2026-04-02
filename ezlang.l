@@ -3,6 +3,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include "ezlang.tab.h"
 
 int token_count = 0;
 
@@ -27,113 +28,81 @@ NEWLINE     \n
 <COMMENT>\n         { }
 <COMMENT>.          { }
 
-"use library"       { print_token("KEYWORD_IMPORT", yytext); return 1; }
-"start"             { print_token("KEYWORD_START", yytext); return 2; }
-"begin"             { print_token("KEYWORD_BEGIN", yytext); return 3; }
-"end"               { print_token("KEYWORD_END", yytext); return 4; }
+"use library"       { print_token("INCLUDE", yytext); return INCLUDE; }
+"start"             { print_token("MAIN", yytext); return MAIN; }
+"begin"             { print_token("LBRACE", yytext); return LBRACE; }
+"end"               { print_token("RBRACE", yytext); return RBRACE; }
 
-"num"               { print_token("KEYWORD_NUM", yytext); return 5; }
-"dec"               { print_token("KEYWORD_DEC", yytext); return 6; }
-"char"              { print_token("KEYWORD_CHAR", yytext); return 7; }
-"fixed"             { print_token("KEYWORD_FIXED", yytext); return 8; }
-"void"              { print_token("KEYWORD_VOID", yytext); return 9; }
+"num"               { print_token("INT", yytext); return INT; }
+"dec"               { print_token("DOUBLE", yytext); return DOUBLE; }
+"char"              { print_token("CHAR", yytext); return CHAR; }
+"fixed"             { print_token("CONST", yytext); return CONST; }
+"void"              { print_token("VOID", yytext); return VOID; }
 
-"check"             { print_token("KEYWORD_CHECK", yytext); return 10; }
-"or check"          { print_token("KEYWORD_OR_CHECK", yytext); return 11; }
-"otherwise"         { print_token("KEYWORD_OTHERWISE", yytext); return 12; }
-"inspect"           { print_token("KEYWORD_INSPECT", yytext); return 13; }
-"option"            { print_token("KEYWORD_OPTION", yytext); return 14; }
-"fallback"          { print_token("KEYWORD_FALLBACK", yytext); return 15; }
-"stop"              { print_token("KEYWORD_STOP", yytext); return 16; }
-"skip"              { print_token("KEYWORD_SKIP", yytext); return 17; }
+"check"             { print_token("IF", yytext); return IF; }
+"or check"          { print_token("ELSE_IF", yytext); return ELSE_IF; }
+"otherwise"         { print_token("ELSE", yytext); return ELSE; }
+"inspect"           { print_token("SWITCH", yytext); return SWITCH; }
+"option"            { print_token("CASE", yytext); return CASE; }
+"fallback"          { print_token("DEFAULT", yytext); return DEFAULT; }
+"stop"              { print_token("BREAK", yytext); return BREAK; }
+"skip"              { print_token("CONTINUE", yytext); return CONTINUE; }
 
-"iterate"           { print_token("KEYWORD_ITERATE", yytext); return 18; }
-"during"            { print_token("KEYWORD_DURING", yytext); return 19; }
-"to"                { print_token("KEYWORD_TO", yytext); return 20; }
+"iterate"           { print_token("FOR", yytext); return FOR; }
+"during"            { print_token("WHILE", yytext); return WHILE; }
+"to"                { print_token("TO", yytext); return TO; }
 
-"send"              { print_token("KEYWORD_SEND", yytext); return 21; }
-"show"              { print_token("KEYWORD_SHOW", yytext); return 22; }
-"scan"              { print_token("KEYWORD_SCAN", yytext); return 23; }
+"send"              { print_token("RETURN", yytext); return RETURN; }
+"show"              { print_token("PRINTF", yytext); return PRINTF; }
+"scan"              { print_token("SCANF", yytext); return SCANF; }
 
-"and"               { print_token("LOGICAL_AND", yytext); return 24; }
-"or"                { print_token("LOGICAL_OR", yytext); return 25; }
-"not"               { print_token("LOGICAL_NOT", yytext); return 26; }
-"equals"            { print_token("RELATIONAL_EQUALS", yytext); return 27; }
-"differs"           { print_token("RELATIONAL_DIFFERS", yytext); return 28; }
+"and"               { print_token("AND", yytext); return AND; }
+"or"                { print_token("OR", yytext); return OR; }
+"not"               { print_token("NOT", yytext); return NOT; }
+"equals"            { print_token("EQ", yytext); return EQ; }
+"differs"           { print_token("NEQ", yytext); return NEQ; }
 
-"power"             { print_token("MATH_POWER", yytext); return 29; }
-"root"              { print_token("MATH_ROOT", yytext); return 30; }
-
-
-"="                 { print_token("ASSIGN_OP", yytext); return 31; }
-"+"                 { print_token("PLUS_OP", yytext); return 32; }
-"-"                 { print_token("MINUS_OP", yytext); return 33; }
-"*"                 { print_token("MULT_OP", yytext); return 34; }
-"/"                 { print_token("DIV_OP", yytext); return 35; }
-"%"                 { print_token("MOD_OP", yytext); return 36; }
-">="                { print_token("GREATER_EQUAL", yytext); return 39; }
-"<="                { print_token("LESS_EQUAL", yytext); return 40; }
-">"                 { print_token("GREATER_THAN", yytext); return 37; }
-"<"                 { print_token("LESS_THAN", yytext); return 38; }
+"power"             { print_token("POW", yytext); return POW; }
+"root"              { print_token("SQRT", yytext); return SQRT; }
 
 
-"("                 { print_token("LEFT_PAREN", yytext); return 41; }
-")"                 { print_token("RIGHT_PAREN", yytext); return 42; }
-","                 { print_token("COMMA", yytext); return 43; }
-":"                 { print_token("COLON", yytext); return 44; }
+"="                 { print_token("ASSIGN", yytext); return ASSIGN; }
+"+"                 { print_token("PLUS", yytext); return PLUS; }
+"-"                 { print_token("MINUS", yytext); return MINUS; }
+"*"                 { print_token("MULT", yytext); return MULT; }
+"/"                 { print_token("DIV", yytext); return DIV; }
+"%"                 { print_token("MOD", yytext); return MOD; }
+">="                { print_token("GE", yytext); return GE; }
+"<="                { print_token("LE", yytext); return LE; }
+">"                 { print_token("GT", yytext); return GT; }
+"<"                 { print_token("LT", yytext); return LT; }
 
-{FLOAT}             { print_token("FLOAT_LITERAL", yytext); return 46; }
-{INTEGER}           { print_token("INTEGER_LITERAL", yytext); return 45; }
-'[^']'              { print_token("CHAR_LITERAL", yytext); return 47; }
-\"[^\"]*\"          { print_token("STRING_LITERAL", yytext); return 48; }
 
-{IDENTIFIER}        { print_token("IDENTIFIER", yytext); return 49; }
+"("                 { print_token("LPAREN", yytext); return LPAREN; }
+")"                 { print_token("RPAREN", yytext); return RPAREN; }
+","                 { print_token("COMMA", yytext); return COMMA; }
+":"                 { print_token("COLON", yytext); return COLON; }
+
+{FLOAT}             { print_token("DOUBLE_LIT", yytext); yylval.dval = atof(yytext); return DOUBLE_LIT; }
+{INTEGER}           { print_token("INT_LIT", yytext); yylval.dval = atof(yytext); return INT_LIT; }
+'[^']'              { print_token("CHAR_LIT", yytext); yylval.cval = yytext[1]; return CHAR_LIT; }
+\"[^\"]*\"        { char *s; print_token("STRING_LIT", yytext); s = strdup(yytext + 1); s[strlen(s) - 1] = '\0'; yylval.sval = s; return STRING_LIT; }
+
+{IDENTIFIER}        { print_token("IDENTIFIER", yytext); yylval.sval = strdup(yytext); return IDENTIFIER; }
 
 {WHITESPACE}        { }
-{NEWLINE}           { }
+{NEWLINE}           { return NEWLINE; }
 
-.                   { fprintf(yyout, "Line %d: ERROR - Unrecognized character: '%s'\n", yylineno, yytext); }
+.                   {
+                        fprintf(yyout, "Line %d: ERROR - Unrecognized character: '%s'\n", yylineno, yytext);
+                        return INVALID;
+                    }
 
 %%
 
 void print_token(const char* token_type, const char* lexeme) {
     token_count++;
     fprintf(yyout, "Line %3d: %-25s --> %s\n", yylineno, token_type, lexeme);
-}
-
-int main(int argc, char** argv) {
-    FILE* input_file;
-
-    yyout = stdout;
-    if (argc > 2) {
-        yyout = fopen(argv[2], "w");
-        if (!yyout) {
-            fprintf(stderr, "Error: Cannot open output file %s\n", argv[2]);
-            yyout = stdout;
-        }
-    }
-
-    if (argc > 1) {
-        input_file = fopen(argv[1], "r");
-        if (!input_file) {
-            fprintf(stderr, "Error: Cannot open file %s\n", argv[1]);
-            return 1;
-        }
-        yyin = input_file;
-    }
-
-    fprintf(yyout, "Line    Token Type               Lexeme\n");
-    fprintf(yyout, "----------------------------------------\n");
-
-    while (yylex() != 0) { }
-
-    
-    fprintf(yyout, "\nTotal tokens: %d, Lines: %d\n", token_count, yylineno);
-
-    if (yyout != stdout) fclose(yyout);
-    if (yyin != stdin) fclose(input_file);
-
-    return 0;
 }
 
 int yywrap() {

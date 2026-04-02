@@ -1,0 +1,15 @@
+start() begin
+    num x = 5
+
+    check (x > 5) begin
+        show("x > 5")
+    end
+    or check (x equals 5) begin
+        show("x == 5")
+    end
+    otherwise begin
+        show("x < 5")
+    end
+
+    send 0
+end
