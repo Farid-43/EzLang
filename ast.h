@@ -39,6 +39,7 @@ typedef struct Node
     struct Node *next;
 } Node;
 
+// Function prototypes for AST construction
 Node *makeNode(int type);
 Node *makeNum(double d);
 Node *makeDec(double d);

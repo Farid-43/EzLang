@@ -1,7 +1,6 @@
 start() begin
     num a = 10
     dec b = 2.5
-    char c = 'Z'
     num d
 
     d = a + 5
@@ -9,7 +8,6 @@ start() begin
 
     show(a)
     show(b)
-    show(c)
     show(d)
 
     send 0

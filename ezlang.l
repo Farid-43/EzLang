@@ -102,7 +102,9 @@ NEWLINE     \n
 
 void print_token(const char* token_type, const char* lexeme) {
     token_count++;
-    fprintf(yyout, "Line %3d: %-25s --> %s\n", yylineno, token_type, lexeme);
+    /* Keep counting tokens internally, but do not print lexer trace lines. */
+    (void)token_type;
+    (void)lexeme;
 }
 
 int yywrap() {

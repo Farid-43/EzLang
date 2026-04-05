@@ -9,6 +9,7 @@
 #define VAL_CHAR 2
 #define VAL_STR 3
 
+// Runtime Value
 typedef struct
 {
     int type;
@@ -18,6 +19,7 @@ typedef struct
 } Val;
 
 /* Opaque enough for parser actions (duplicate check + add). */
+// Function Structure
 typedef struct
 {
     char name[64];
