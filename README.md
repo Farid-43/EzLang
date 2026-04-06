@@ -36,10 +36,6 @@ input.ez  →  input.c (compilable with gcc)
 
 Minimal TAC generation for arithmetic expressions (`+`, `-`, `*`, `/`):
 
-```bash
-EZLANG_EMIT_TAC=1 ./ezlang_parser test/tac_only.ez
-```
-
 Generates `test/tac_only.tac`:
 
 ```
@@ -82,11 +78,23 @@ EzLang/
 
 ### Using Makefile (Recommended)
 
+Linux/macOS:
+
 ```bash
 make build      # Build the compiler
 make test       # Run all tests
 make clean      # Clean generated files
 ```
+
+Windows (cmd + MinGW):
+
+```bat
+mingw32-make build
+mingw32-make test
+mingw32-make clean
+```
+
+Note: `make test` stores per-test logs in `test/output/*.out`, so terminal output is intentionally minimal.
 
 ### Manual Build
 
@@ -100,8 +108,16 @@ gcc ezlang.tab.c lex.yy.c ast.c runtime.c codegen.c -o ezlang_parser.exe -lm
 
 ### Run EzLang Program
 
+Linux/macOS:
+
 ```bash
 ./ezlang_parser test/for_loop.ez
+```
+
+Windows (cmd):
+
+```bat
+ezlang_parser.exe test\for_loop.ez
 ```
 
 **Output:**
@@ -112,8 +128,23 @@ gcc ezlang.tab.c lex.yy.c ast.c runtime.c codegen.c -o ezlang_parser.exe -lm
 
 ### Save Output to File
 
+Linux/macOS:
+
 ```bash
 ./ezlang_parser test/for_loop.ez output.txt
+```
+
+Windows (cmd):
+
+```bat
+ezlang_parser.exe test\for_loop.ez output.txt
+```
+
+### Compile and Run Generated C (Windows)
+
+```bat
+gcc test\for_loop.c -o test\for_loop.exe -lm
+test\for_loop.exe
 ```
 
 ## 📝 Example
