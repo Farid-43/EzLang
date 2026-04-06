@@ -1,6 +1,0 @@
-start() begin
-num a = 10
-check(a == 10) begin
-show("ok") 
-end
-end

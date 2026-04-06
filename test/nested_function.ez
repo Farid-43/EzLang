@@ -1,0 +1,16 @@
+num add(num a, num b) begin
+    send a + b
+end
+
+num wrap(num x) begin
+    send add(x, 2)
+end
+
+
+
+start() begin
+    num r
+    r = wrap(5)
+    show(r)
+    send 0
+end

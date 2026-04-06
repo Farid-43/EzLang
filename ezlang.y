@@ -16,6 +16,34 @@ extern FILE *yyout;
 /* For code generation */
 static Node *main_block_for_codegen = NULL;
 static char *codegen_output_file = NULL;
+
+/* Minimal TAC (partial): only +,-,*,/ in assignment expressions. */
+static int tac_temp_id = 1;
+static FILE *tac_out = NULL;
+
+static int emit_pm_tac_expr(Node *n, char *out, size_t out_sz) /*expression TAC emit করার recursive helper*/
+{
+    char l[64], r[64];
+    if (!n) { snprintf(out, out_sz, "0"); return 1; }
+    if (n->type == N_NUM || n->type == N_DEC) { snprintf(out, out_sz, "%g", n->dval); return 1; } /* numeric literal হলে direct operand text বানায়*/
+    if (n->type == N_ID && n->sval) { snprintf(out, out_sz, "%s", n->sval); return 1; } /* identifier হলে variable name direct operand হিসেবে use করে*/
+    if (n->type == N_BINOP && n->op && (!strcmp(n->op, "+") || !strcmp(n->op, "-") || !strcmp(n->op, "*") || !strcmp(n->op, "/")) &&
+        emit_pm_tac_expr(n->left, l, sizeof(l)) && emit_pm_tac_expr(n->right, r, sizeof(r))) {
+        snprintf(out, out_sz, "t%d", tac_temp_id++);
+        if (tac_out) fprintf(tac_out, "%s = %s %s %s\n", out, l, n->op, r);
+        return 1;
+    }
+    return 0;
+}
+
+static void emit_pm_tac_block(Node *s) /* statement list TAC emitter function*/
+{
+    char t[64];
+    for (; s; s = s->next) {
+        if (s->type == N_ASSIGN && s->sval && s->left && s->left->type == N_BINOP && emit_pm_tac_expr(s->left, t, sizeof(t))) /*assignment + binop RHS হলে TAC generate*/
+            fprintf(tac_out, "%s = %s\n", s->sval, t);
+    }
+}
 %}
 
 %union {
@@ -26,6 +54,7 @@ static char *codegen_output_file = NULL;
     int         ival;
 }
 
+/* Token declaration = terminal symbols */
 %token NEWLINE INVALID
 %token INCLUDE MAIN LBRACE RBRACE
 %token INT DOUBLE CHAR CONST VOID
@@ -43,6 +72,7 @@ static char *codegen_output_file = NULL;
 %token <cval> CHAR_LIT
 %token <sval> STRING_LIT IDENTIFIER
 
+/* %type = Non-terminal এর semantic value type বলে দেয় */
 %type <node> block statements_opt statements statement
 %type <node> declaration assignment show_stmt send_stmt
 %type <node> check_stmt check_tail during_stmt iterate_stmt
@@ -95,6 +125,8 @@ function_def
               fprintf(stderr, "Error: duplicate function '%s'\n", $2);
           } else {
               addFunc($2, $1, $4, $7);      /* for runtimr register */
+             
+             
               /*
                 add(num a, num b) begin
                     send a + b
@@ -352,7 +384,7 @@ int main(int argc, char **argv) {
         if (!yyout) { fprintf(stderr, "Cannot open %s\n", argv[2]); yyout = stdout; }
     }
 
-    if (argc > 1) {
+    if (argc > 1) { /* Input file setup*/
         input_filename = argv[1];
         input_file = fopen(argv[1], "r");
         if (!input_file) { fprintf(stderr, "Cannot open %s\n", argv[1]); return 1; }
@@ -362,10 +394,13 @@ int main(int argc, char **argv) {
     if (yyparse() != 0) {
         fprintf(yyout, "\nParsing failed.\n");
     } else {
-        /* Generate C code if parsing succeeded */
+        /* Generate C code if parsing succeeded,  C Code Generation Section */
         if (main_block_for_codegen && input_filename) {
             char c_filename[512];
+            char tac_filename[512];
+            const char *emit_tac;
             FILE *c_file;
+            FILE *t_file;
             char *dot;
             
             /* Create .c filename from input filename */
@@ -381,11 +416,27 @@ int main(int argc, char **argv) {
             }
             
             c_file = fopen(c_filename, "w");
-            if (c_file) {
+            if (c_file) { /* C code generation */
                 generateCCode(c_file, main_block_for_codegen);
                 fclose(c_file);
             } else {
                 fprintf(stderr, "Warning: Could not create %s\n", c_filename);
+            }
+
+            emit_tac = getenv("EZLANG_EMIT_TAC");
+            if (emit_tac && strcmp(emit_tac, "1") == 0) {
+                strncpy(tac_filename, input_filename, sizeof(tac_filename) - 1);
+                tac_filename[sizeof(tac_filename) - 1] = '\0';
+                dot = strrchr(tac_filename, '.');
+                if (dot) strcpy(dot, ".tac"); else strcat(tac_filename, ".tac");
+                t_file = fopen(tac_filename, "w");
+                if (t_file) {
+                    tac_out = t_file;
+                    tac_temp_id = 1;
+                    emit_pm_tac_block(main_block_for_codegen);
+                    tac_out = NULL;
+                    fclose(t_file);
+                }
             }
         }
     }

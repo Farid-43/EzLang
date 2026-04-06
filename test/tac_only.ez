@@ -1,0 +1,10 @@
+start() begin
+    num a = 8
+    num b = 2
+    num c
+
+    c = a + b * 2 - b / 1
+
+    show(c)
+    send 0
+end

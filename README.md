@@ -1,84 +1,199 @@
-# EzLang Compiler (Core Milestone)
+# EzLang Compiler
 
-This project currently completes the core compiler milestones using Flex + Bison:
+A complete compiler/interpreter for **EzLang** - a simple, Bengali-friendly programming language designed for educational purposes. Built with Flex (lexer) and Bison (parser).
 
-- Lexical analysis (tokenization)
-- Syntax analysis (grammar parsing)
-- Runtime execution for core language constructs
+## ✨ Features
 
-Unique/advanced features are intentionally postponed for a later phase.
+### Core Language Features
 
-## Current Status
-
-Core features implemented:
-
-- Data types: `num`, `dec`, `char`, `fixed`, `void`
-- Declarations and assignments
-- Expressions:
+- **Data Types:** `num` (int), `dec` (double), `char`, `fixed` (const), `void`
+- **Variables:** Declaration and assignment
+- **Expressions:**
   - Arithmetic: `+`, `-`, `*`, `/`, `%`
   - Relational: `>`, `<`, `>=`, `<=`, `equals`, `differs`
   - Logical: `and`, `or`, `not`
-  - Math functions: `power()`, `root()`
-- Control flow:
-  - `check` / `or check` / `otherwise`
-  - `during`
-  - `iterate(i = a to b)`
-- I/O:
-  - `show(...)`
-  - `scan(...)`
-  - `send`
-- Comments:
-  - single-line `# ...`
-  - multi-line `/* ... */`
+  - Math functions: `power(x, y)`, `root(x)`
+- **Control Flow:**
+  - `check` / `or check` / `otherwise` (if/else if/else)
+  - `during` (while loop)
+  - `iterate(i = a to b)` (for loop)
+- **I/O:**
+  - `show(...)` - print output
+  - `scan(...)` - read input
+  - `send` - return value
+- **Functions:** User-defined functions with parameters
+- **Comments:** `# single-line` and `/* multi-line */`
 
-## Project Files
+### 🆕 C Code Generation
 
-- `ezlang.l` - Flex lexer specification
-- `ezlang.y` - Bison parser + AST + executor
-- `test/test.ez` - main core test program
-- `test/test_core.ez` - additional core behavior regression test
+The compiler generates equivalent **C code** from EzLang source:
 
-Generated files after build:
+```
+input.ez  →  input.c (compilable with gcc)
+```
 
-- `ezlang.tab.c`, `ezlang.tab.h`
-- `lex.yy.c`
-- `ezlang_parser.exe`
+### 🆕 Three-Address Code (TAC)
 
-## Build and Run (Windows)
+Minimal TAC generation for arithmetic expressions (`+`, `-`, `*`, `/`):
 
-Use a shell where `bison`, `flex`, and `gcc` are available.
+```bash
+EZLANG_EMIT_TAC=1 ./ezlang_parser test/tac_only.ez
+```
 
-```bat
+Generates `test/tac_only.tac`:
+
+```
+t1 = b * 2
+t2 = a + t1
+t3 = b / 1
+t4 = t2 - t3
+c = t4
+```
+
+## 📁 Project Structure
+
+```
+EzLang/
+├── ezlang.l          # Flex lexer specification
+├── ezlang.y          # Bison parser + grammar rules
+├── ast.h / ast.c     # Abstract Syntax Tree definitions
+├── runtime.h / runtime.c   # Interpreter/executor
+├── codegen.h / codegen.c   # C code generator (NEW!)
+├── Makefile          # Build automation
+├── test/             # Test files (.ez)
+│   ├── for_loop.ez
+│   ├── if_else.ez
+│   ├── nested_loop.ez
+│   ├── var_decl_assign.ez
+│   ├── function_builtin.ez
+│   ├── user_defined_function_simple.ez
+│   └── ...
+├── explain.md        # Detailed code documentation (Bengali)
+└── README.md
+```
+
+## 🔧 Build
+
+### Prerequisites
+
+- `bison` (GNU Bison)
+- `flex` (Fast Lexical Analyzer)
+- `gcc` (GNU C Compiler)
+
+### Using Makefile (Recommended)
+
+```bash
+make build      # Build the compiler
+make test       # Run all tests
+make clean      # Clean generated files
+```
+
+### Manual Build
+
+```bash
 bison -d ezlang.y
 flex ezlang.l
-gcc ezlang.tab.c lex.yy.c -o ezlang_parser.exe -lm
+gcc ezlang.tab.c lex.yy.c ast.c runtime.c codegen.c -o ezlang_parser.exe -lm
 ```
 
-Run with input file:
+## 🚀 Usage
 
-```bat
-ezlang_parser.exe test\test.ez
+### Run EzLang Program
+
+```bash
+./ezlang_parser test/for_loop.ez
 ```
 
-Or write output to a file:
+**Output:**
 
-```bat
-ezlang_parser.exe test\test.ez output.txt
+1. Token listing (lexical analysis)
+2. Program execution output (interpreter)
+3. Generated C file (`test/for_loop.c`)
+
+### Save Output to File
+
+```bash
+./ezlang_parser test/for_loop.ez output.txt
 ```
 
-## Verified Core Tests
+## 📝 Example
 
-1. `test/test.ez`
+### EzLang Code (`test/for_loop.ez`)
 
-- Validates declarations, expressions, `check`, `during`, `show`, and `send`.
+```ezlang
+start() begin
+    iterate(i = 1 to 3) begin
+        show(i)
+    end
+    send 0
+end
+```
 
-2. `test/test_core.ez`
+### Generated C Code (`test/for_loop.c`)
 
-- Validates newline-separated `check -> or check -> otherwise` chain.
-- Validates `iterate` and `during` loops.
+```c
+#include <stdio.h>
+#include <math.h>
 
-## Notes
+int main(void)
+{
+    for (int i = 1; i <= 3; i++)
+    {
+        printf("%g\n", (double)i);
+    }
+    return 0;
+}
+```
 
-- Parser currently builds with expected grammar conflicts (`%expect 5`).
-- This is acceptable for the current grammar shape and does not block core behavior.
-- Advanced/unique rubric items (for example, TAC generation or extra optimizations) are not included yet by design.
+### Runtime Output
+
+```
+1
+2
+3
+```
+
+## 🧪 Test Files
+
+| Test File                         | Description                                       |
+| --------------------------------- | ------------------------------------------------- |
+| `var_decl_assign.ez`              | Variable declaration & assignment                 |
+| `for_loop.ez`                     | For loop (iterate)                                |
+| `if_else.ez`                      | Conditional statements (check/or check/otherwise) |
+| `nested_loop.ez`                  | Nested loops                                      |
+| `function_builtin.ez`             | Built-in functions (power, root)                  |
+| `user_defined_function_simple.ez` | User-defined functions                            |
+| `tac_only.ez`                     | TAC generation demo (`EZLANG_EMIT_TAC=1`)         |
+| `invalid_token.ez`                | Lexical error handling                            |
+| `syntax_error.ez`                 | Syntax error handling                             |
+
+## 📖 Documentation
+
+- **`explain.md`** - Detailed line-by-line code explanation (Bengali)
+- **`ezlang_syntax_cheatsheet_bn.md`** - EzLang syntax reference (Bengali)
+
+## ⚙️ Compiler Pipeline
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Source    │────▶│    Lexer    │────▶│   Parser    │
+│  (.ez file) │     │  (ezlang.l) │     │  (ezlang.y) │
+└─────────────┘     └─────────────┘     └──────┬──────┘
+                                               │
+                                               ▼
+                                         ┌─────────────┐
+                                         │     AST     │
+                                         │  (ast.c)    │
+                                         └──────┬──────┘
+                           ┌───────────────────┴───────────────────┐
+                           ▼                                       ▼
+                    ┌─────────────┐                         ┌─────────────┐
+                    │   Runtime   │                         │   Codegen   │
+                    │ (runtime.c) │                         │ (codegen.c) │
+                    └──────┬──────┘                         └──────┬──────┘
+                           ▼                                       ▼
+                    ┌─────────────┐                         ┌─────────────┐
+                    │   stdout    │                         │   .c file   │
+                    │  (output)   │                         │ (generated) │
+                    └─────────────┘                         └─────────────┘
+```

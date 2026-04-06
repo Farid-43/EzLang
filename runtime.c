@@ -74,7 +74,8 @@ Func *addFunc(const char *name, int return_type, Node *params, Node *body)
 static Sym *findSym(const char *name) // Look up a symbol by name (Variable lookup)
 {
     int i;
-    for (i = 0; i < nsyms; i++)
+    // Search from newest to oldest so function parameters/local bindings shadow outer names.
+    for (i = nsyms - 1; i >= 0; i--)
         if (strcmp(symtab[i].name, name) == 0)
             return &symtab[i];
     return NULL;
@@ -141,7 +142,7 @@ static void printVal(Val v)
 
 /* ===== Expression evaluator ===== */
 
-static Val evalNode(Node *n)
+static Val evalNode(Node *n) // AST node evaluate করে runtime Val return করে।
 {
     Val v, l, r, a;
     v.type = VAL_NUM;
@@ -316,7 +317,7 @@ static Val evalNode(Node *n)
         break;
     }
 
-    case N_CALL:
+    case N_CALL: // function call handle করে, function table থেকে function definition খুঁজে নেয়, arguments evaluate করে, parameter-argument binding করে, function body execute করে এবং return value handle করে।
     {
         Func *f;
         Sym saved_symtab[MAX_SYMS];
@@ -342,13 +343,6 @@ static Val evalNode(Node *n)
         if (!f)
         {
             fprintf(stderr, "Error: undefined function '%s'\n", n->sval);
-            v = result;
-            break;
-        }
-
-        if (in_function) // check recursive call (not supported)
-        {
-            fprintf(stderr, "Error: nested/recursive user function calls are not supported ('%s')\n", n->sval);
             v = result;
             break;
         }
